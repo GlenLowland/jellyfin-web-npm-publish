@@ -3,6 +3,7 @@ name: Check & release on schedule
 on:
   schedule:
     - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   release_scheduler:
