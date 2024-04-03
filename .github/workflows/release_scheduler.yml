@@ -2,7 +2,7 @@ name: Check & release on schedule
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 jobs:
@@ -55,12 +55,18 @@ jobs:
           SKIP_PREPARE=1 npm ci --no-audit
           USE_SYSTEM_FONTS=1 npm run build:production
 
-      - name: Publish new @GlenLowland/jellyfin-web package version
+      - name: Publish new @glenlowland/jellyfin-web package version
         uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./jellyfin-web
+          access: public
 
+      - name: Release Build Result
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.latest-jellyfin-web.outputs.release }}
+          body: "A new version of @glenlowland/jellyfin-web has been published because of a new release of jellyfin-web."
       
 
       
