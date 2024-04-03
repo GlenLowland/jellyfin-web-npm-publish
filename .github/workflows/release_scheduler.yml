@@ -1,0 +1,60 @@
+name: Check & release on schedule
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+
+jobs:
+  release_scheduler:
+    runs-on: ubuntu-latest
+    steps:
+      - run: env
+
+      - name: Get current latest release
+        id: latest-release
+        uses: Lukacs5/action-latest-release-version@v2.0.0
+
+      - name: Get Latest Jellyfin-web release
+        id: latest-jellyfin-web
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          owner: jellyfin
+          repo: jellyfin-web
+          excludes: prerelease, draft
+
+      - name: Clone jellyfin-web
+        if: steps.latest-release.outputs.latest-release != steps.latest-jellyfin-web.latest-release
+        uses: sudosubin/git-clone-action@v1.0.1
+        with:
+          repository: 'jellyfin/jellyfin-web'
+          platform: 'github'
+          path: './'
+          ref: ${{ steps.latest-jellyfin-web.outputs.release }}
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.0.0
+        with:
+          node-version: '>=14'
+
+      - name: Rename package in jellyfin-web/package.json
+        id: rename-npm-package
+        uses: actions/byd-package-rename@main
+        with:
+          packages-path: './package.json'
+          old-prefix: 'jellyfin-web'
+          new-prefix: '@glenlowland/jellyfin-web'
+          publish-registry: 'https://registry.npmjs.org/'
+
+      - name: Build jellyfin-web
+        run: |
+          SKIP_PREPARE=1 npm ci --no-audit
+          USE_SYSTEM_FONTS=1 npm run build:production
+
+      - name: Publish new @GlenLowland/jellyfin-web package version
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+      
+
+      
