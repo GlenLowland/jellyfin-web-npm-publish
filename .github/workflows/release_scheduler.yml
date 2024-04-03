@@ -32,7 +32,7 @@ jobs:
         with:
           repository: 'jellyfin/jellyfin-web'
           platform: 'github'
-          path: './'
+          path: './jellyfin-web'
           ref: ${{ steps.latest-jellyfin-web.outputs.release }}
 
       - name: Setup Node.js environment
@@ -44,13 +44,14 @@ jobs:
         id: rename-npm-package
         uses: sfelli/byd-package-rename@main
         with:
-          packages-path: './package.json'
+          packages-path: './jellyfin-web/package.json'
           old-prefix: 'jellyfin-web'
           new-prefix: '@glenlowland/jellyfin-web'
           publish-registry: 'https://registry.npmjs.org/'
 
       - name: Build jellyfin-web
         run: |
+          cd jellyfin-web
           SKIP_PREPARE=1 npm ci --no-audit
           USE_SYSTEM_FONTS=1 npm run build:production
 
@@ -58,6 +59,7 @@ jobs:
         uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
+          package: ./jellyfin-web
 
       
 
