@@ -2,7 +2,7 @@ name: Check & release on schedule
 
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '5 * * * *'
 
 jobs:
   release_scheduler:
