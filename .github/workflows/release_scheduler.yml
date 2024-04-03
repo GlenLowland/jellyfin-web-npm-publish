@@ -39,7 +39,7 @@ jobs:
 
       - name: Rename package in jellyfin-web/package.json
         id: rename-npm-package
-        uses: actions/byd-package-rename@main
+        uses: sfelli/byd-package-rename@main
         with:
           packages-path: './package.json'
           old-prefix: 'jellyfin-web'
