@@ -67,6 +67,13 @@ jobs:
         with:
           tag_name: ${{ steps.latest-jellyfin-web.outputs.release }}
           body: "A new version of @glenlowland/jellyfin-web has been published because of a new release of jellyfin-web."
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: GlenLowland/jellyfin-tizen-npm-publish
+          event-type: new-jellyfin-web-release
       
 
       
