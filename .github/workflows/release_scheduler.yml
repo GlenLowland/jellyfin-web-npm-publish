@@ -2,7 +2,7 @@ name: Check & release on schedule
 
 on:
   schedule:
-    - cron: '5 * * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   release_scheduler:
@@ -23,7 +23,7 @@ jobs:
           excludes: prerelease, draft
 
       - name: Clone jellyfin-web
-        if: steps.latest-release.outputs.latest-release != steps.latest-jellyfin-web.latest-release
+        if: steps.latest-release.outputs.latest-release != steps.latest-jellyfin-web.outputs.release
         uses: sudosubin/git-clone-action@v1.0.1
         with:
           repository: 'jellyfin/jellyfin-web'
