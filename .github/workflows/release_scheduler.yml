@@ -20,11 +20,10 @@ jobs:
 
       - name: Get Latest Jellyfin-web release
         id: latest-jellyfin-web
-        uses: pozetroninc/github-action-get-latest-release@master
+        uses: rez0n/actions-github-release@v2.0
         with:
-          owner: jellyfin
-          repo: jellyfin-web
-          excludes: prerelease, draft
+          repository: jellyfin/jellyfin-web
+          type: stable
 
       - name: Clone jellyfin-web
         if: steps.latest-release.outputs.latest-release != steps.latest-jellyfin-web.outputs.release
