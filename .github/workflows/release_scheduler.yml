@@ -40,11 +40,13 @@ jobs:
           ref: ${{ steps.latest-jellyfin-web.outputs.release }}
 
       - name: Setup Node.js environment
+        if: steps.latest-release.outputs.release != steps.latest-jellyfin-web.outputs.release
         uses: actions/setup-node@v3.0.0
         with:
           node-version: '>=14'
 
       - name: Rename package in jellyfin-web/package.json
+        if: steps.latest-release.outputs.release != steps.latest-jellyfin-web.outputs.release
         id: rename-npm-package
         uses: sfelli/byd-package-rename@main
         with:
@@ -54,12 +56,14 @@ jobs:
           publish-registry: 'https://registry.npmjs.org/'
 
       - name: Build jellyfin-web
+        if: steps.latest-release.outputs.release != steps.latest-jellyfin-web.outputs.release
         run: |
           cd jellyfin-web
           SKIP_PREPARE=1 npm ci --no-audit
           USE_SYSTEM_FONTS=1 npm run build:production
 
       - name: Publish new @glenlowland/jellyfin-web package version
+        if: steps.latest-release.outputs.release != steps.latest-jellyfin-web.outputs.release
         uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
@@ -67,12 +71,14 @@ jobs:
           access: public
 
       - name: Release Build Result
+        if: steps.latest-release.outputs.release != steps.latest-jellyfin-web.outputs.release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.latest-jellyfin-web.outputs.release }}
           body: "A new version of @glenlowland/jellyfin-web has been published because of a new release of jellyfin-web."
 
       - name: Repository Dispatch
+        if: steps.latest-release.outputs.release != steps.latest-jellyfin-web.outputs.release
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
