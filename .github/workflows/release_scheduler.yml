@@ -16,17 +16,22 @@ jobs:
 
       - name: Get current latest release
         id: latest-release
-        uses: Lukacs5/action-latest-release-version@v2.0.0
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          owner: GlenLowland
+          repo: jellyfin-web-npm-publish
+          excludes: prerelease, draft
 
       - name: Get Latest Jellyfin-web release
         id: latest-jellyfin-web
-        uses: rez0n/actions-github-release@v2.0
+        uses: pozetroninc/github-action-get-latest-release@master
         with:
-          repository: jellyfin/jellyfin-web
-          type: stable
+          owner: jellyfin
+          repo: jellyfin-web
+          excludes: prerelease, draft
 
       - name: Clone jellyfin-web
-        if: steps.latest-release.outputs.latest-release != steps.latest-jellyfin-web.outputs.release
+        if: steps.latest-release.outputs.release != steps.latest-jellyfin-web.outputs.release
         uses: sudosubin/git-clone-action@v1.0.1
         with:
           repository: 'jellyfin/jellyfin-web'
